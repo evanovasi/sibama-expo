@@ -41,7 +41,11 @@ const DrawerContent = (props) => {
 
     const CircleCheckbox = ({ checked, onChange }) => {
         return (
-            <TouchableOpacity onPress={onChange} style={styles.circleCheckbox}>
+            <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={onChange}
+                style={styles.circleCheckbox}
+            >
                 {checked && <View style={styles.checkedCircle} />}
             </TouchableOpacity>
         );
