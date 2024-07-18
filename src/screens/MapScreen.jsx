@@ -1,30 +1,52 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Polyline, Marker } from 'react-native-maps';
 import { instance } from '../api/common';
 import Spinner from 'react-native-loading-spinner-overlay';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Pastikan Anda sudah menginstal react-native-vector-icons
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const MapScreen = ({ navigation }) => {
+const MapScreen = ({ navigation, route }) => {
+    const [allFeatures, setAllFeatures] = useState([]);
     const [features, setFeatures] = useState([]);
     const [spinner, setSpinner] = useState(false);
     const [selectedPolylineId, setSelectedPolylineId] = useState(null);
     const [popupInfo, setPopupInfo] = useState(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await instance.get('?idKec=1');
-                const lineStringFeatures = response.data.features.filter(
-                    (feature) => feature.geometry.type === 'LineString'
-                );
-                setFeatures(lineStringFeatures);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-        fetchData();
+    const fetchData = useCallback(async () => {
+        try {
+            setSpinner(true);
+            const response = await instance.get();
+            const lineStringFeatures = response.data.features.filter(
+                (feature) => feature.geometry.type === 'LineString'
+            );
+            setAllFeatures(lineStringFeatures);
+            setFeatures(lineStringFeatures); // Set default features
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        } finally {
+            setSpinner(false);
+        }
     }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    useEffect(() => {
+        if (route.params?.selectedKecamatanNames) {
+            filterFeatures(route.params.selectedKecamatanNames);
+        }
+    }, [route.params?.selectedKecamatanNames]);
+
+    const filterFeatures = useCallback(
+        (selectedKecamatanNames) => {
+            const filteredFeatures = allFeatures.filter((feature) =>
+                selectedKecamatanNames.includes(feature.properties.kecamatan)
+            );
+            setFeatures(filteredFeatures);
+        },
+        [allFeatures]
+    );
 
     const handlePolylinePress = (event, info) => {
         const { coordinate } = event.nativeEvent;
@@ -37,10 +59,6 @@ const MapScreen = ({ navigation }) => {
             setSelectedPolylineId(id);
         }
     };
-
-    useEffect(() => {
-        setSpinner(!spinner);
-    }, []);
 
     return (
         <View style={{ flex: 1 }}>
@@ -61,7 +79,6 @@ const MapScreen = ({ navigation }) => {
             >
                 {features.map((feature, index) => (
                     <Polyline
-                        onLayout={() => setSpinner(false)}
                         key={index}
                         coordinates={feature.geometry.coordinates.map(
                             (coord) => ({
@@ -85,7 +102,7 @@ const MapScreen = ({ navigation }) => {
                                 ? 'yellow'
                                 : '#1c769b'
                         }
-                        strokeWidth={1.5}
+                        strokeWidth={1.8}
                         tappable={true}
                     />
                 ))}
@@ -103,6 +120,7 @@ const MapScreen = ({ navigation }) => {
                 )}
             </MapView>
             <TouchableOpacity
+                activeOpacity={0.7}
                 style={styles.fab}
                 onPress={() => navigation.openDrawer()}
             >

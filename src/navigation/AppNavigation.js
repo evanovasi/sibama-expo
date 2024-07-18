@@ -21,7 +21,7 @@ export default () => {
                 }}
                 drawerContent={(props) => <DrawerContent {...props} />}
             >
-                <Drawer.Screen name='Semua Drainase' component={MapScreen} />
+                <Drawer.Screen name='MapScreen' component={MapScreen} />
             </Drawer.Navigator>
         </NavigationContainer>
     );
