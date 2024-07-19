@@ -1,6 +1,6 @@
 {
     "expo": {
-        "name": "sibama",
+        "name": "SIBAMA",
         "slug": "sibama",
         "version": "1.0.0",
         "orientation": "portrait",
@@ -17,6 +17,14 @@
             "config": {
                 "googleMapsApiKey": "AIzaSyD4oaUFWn9OJ7t4X3bG00EYtUUQ0dfWA8E"
             }
+        },
+        "extra": {
+            "eas": {
+                "projectId": "8ef6e357-2767-4513-9fe0-4f14eedcffa8"
+            }
+        },
+        "android": {
+            "package": "com.evanproject.sibama"
         }
     },
     "android": {

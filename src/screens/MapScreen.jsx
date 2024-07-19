@@ -100,9 +100,9 @@ const MapScreen = ({ navigation, route }) => {
                                 ? 'orange'
                                 : feature.properties.id === selectedPolylineId
                                 ? 'yellow'
-                                : '#1c769b'
+                                : '#7A73E7'
                         }
-                        strokeWidth={1.8}
+                        strokeWidth={1.5}
                         tappable={true}
                     />
                 ))}
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 20,
         right: 20,
-        backgroundColor: '#1c769b',
+        backgroundColor: '#7A73E7',
         borderRadius: 50,
         padding: 15,
         elevation: 3,

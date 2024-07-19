@@ -7,7 +7,7 @@ const Drawer = createDrawerNavigator();
 export default () => {
     return (
         <NavigationContainer>
-            <StatusBar backgroundColor='#1c769b' barStyle='light-content' />
+            <StatusBar backgroundColor='#7A73E7' barStyle='light-content' />
             <Drawer.Navigator
                 screenOptions={{
                     headerShown: false,

@@ -1,30 +1,31 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
+import PropTypes from 'prop-types';
 
-const DrawerContent = (props) => {
+const DrawerContent = ({ navigation }) => {
     const kecamatanList = [
-        { id: 1, nama: 'Lowokwaru' },
-        { id: 2, nama: 'Sukun' },
-        { id: 3, nama: 'Blimbing' },
-        { id: 4, nama: 'Kedungkandang' },
-        { id: 5, nama: 'Klojen' },
+        { nama: 'Lowokwaru' },
+        { nama: 'Sukun' },
+        { nama: 'Blimbing' },
+        { nama: 'Kedungkandang' },
+        { nama: 'Klojen' },
     ];
 
     const initialSelectedKecamatan = kecamatanList.reduce((acc, kecamatan) => {
-        acc[kecamatan.id] = true;
+        acc[kecamatan.nama] = true;
         return acc;
     }, {});
 
     const [selectedKecamatan, setSelectedKecamatan] = useState(
         initialSelectedKecamatan
     );
-    const [genanganChecked, setGenanganChecked] = useState(true); // Set default value to true
+    const [genanganChecked, setGenanganChecked] = useState(true);
 
-    const handleCheckboxChange = (id) => {
+    const handleCheckboxChange = (nama) => {
         setSelectedKecamatan((prevSelected) => ({
             ...prevSelected,
-            [id]: !prevSelected[id],
+            [nama]: !prevSelected[nama],
         }));
     };
 
@@ -33,33 +34,33 @@ const DrawerContent = (props) => {
     };
 
     const applyFilters = () => {
-        const selectedKecamatanNames = Object.keys(selectedKecamatan)
-            .filter((id) => selectedKecamatan[id])
-            .map((id) => kecamatanList.find((kec) => kec.id == id).nama);
-        props.navigation.navigate('MapScreen', { selectedKecamatanNames });
+        const selectedKecamatanNames = Object.keys(selectedKecamatan).filter(
+            (nama) => selectedKecamatan[nama]
+        );
+        navigation.navigate('MapScreen', { selectedKecamatanNames });
     };
 
-    const CircleCheckbox = ({ checked, onChange }) => {
-        return (
-            <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={onChange}
-                style={styles.circleCheckbox}
-            >
-                {checked && <View style={styles.checkedCircle} />}
-            </TouchableOpacity>
-        );
-    };
+    const CircleCheckbox = ({ checked, onChange }) => (
+        <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={onChange}
+            style={styles.circleCheckbox}
+        >
+            {checked && <View style={styles.checkedCircle} />}
+        </TouchableOpacity>
+    );
 
     return (
-        <DrawerContentScrollView {...props}>
+        <DrawerContentScrollView>
             <View style={styles.container}>
                 <Text style={styles.title}>Filter Kecamatan</Text>
                 {kecamatanList.map((kecamatan) => (
-                    <View key={kecamatan.id} style={styles.checkboxContainer}>
+                    <View key={kecamatan.nama} style={styles.checkboxContainer}>
                         <CircleCheckbox
-                            checked={selectedKecamatan[kecamatan.id] || false}
-                            onChange={() => handleCheckboxChange(kecamatan.id)}
+                            checked={selectedKecamatan[kecamatan.nama] || false}
+                            onChange={() =>
+                                handleCheckboxChange(kecamatan.nama)
+                            }
                         />
                         <Text style={styles.label}>{kecamatan.nama}</Text>
                     </View>
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
         marginLeft: 8,
     },
     applyButton: {
-        backgroundColor: '#1c769b',
+        backgroundColor: '#7A73E7',
         borderRadius: 25,
         paddingVertical: 10,
         paddingHorizontal: 20,
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
         height: 24,
         borderRadius: 12,
         borderWidth: 2,
-        borderColor: '#1c769b',
+        borderColor: '#7A73E7',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -134,8 +135,12 @@ const styles = StyleSheet.create({
         width: 12,
         height: 12,
         borderRadius: 6,
-        backgroundColor: '#1c769b',
+        backgroundColor: '#7A73E7',
     },
 });
+
+DrawerContent.propTypes = {
+    navigation: PropTypes.object.isRequired,
+};
 
 export default DrawerContent;
